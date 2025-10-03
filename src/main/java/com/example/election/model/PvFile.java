@@ -1,6 +1,7 @@
 package com.example.election.model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PvFile {
 
     @Id
@@ -22,14 +24,20 @@ public class PvFile {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id")
+    @JsonIgnore
     private Result result;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "office_id")
+    private Office office;
 
     private String filename;
     private String contentType;
     private Long sizeBytes;
-
-    @Column(columnDefinition = "TEXT")
-    private String storageUrl;
 
     @CreationTimestamp
     private Instant uploadedAt;

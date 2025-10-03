@@ -1,9 +1,9 @@
 package com.example.election.model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Office {
 
     @Id
@@ -23,14 +24,36 @@ public class Office {
     @Column(nullable = false, unique = true, length = 50)
     private String code;
 
-    private String commune;
-    private String departement;
-    private String region;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commune_id")
+    private Commune commune;
 
-    @OneToMany(mappedBy = "bureau")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    private Region region;
+
+
+    @Column(nullable = false)
+    private int nombreInscrits;
+
+    @Column(nullable = false)
+    private int nombreAbsences;
+
+    @Column(nullable = false)
+    private int nombreVotants;
+
+    @Column(nullable = false)
+    private int bulletinsNuls;
+
+    @OneToMany(mappedBy = "office")
+    @JsonIgnore
     private Set<User> users;
 
-    @OneToMany(mappedBy = "bureau")
+    @OneToMany(mappedBy = "office")
+    @JsonIgnore
     private Set<Result> results;
 }
-

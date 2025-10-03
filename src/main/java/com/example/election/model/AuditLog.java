@@ -1,7 +1,5 @@
 package com.example.election.model;
 
-
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,14 +18,18 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String action;
+    private String message;
 
     @Column(columnDefinition = "jsonb")
     private String details;
 
     private String ip;
+
+    private String location;
 
     @CreationTimestamp
     private Instant createdAt;
